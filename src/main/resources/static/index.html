@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en" ng-app="RDash">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>IIB DASHBOARD</title>
+  <!-- STYLES -->
+  <link rel="stylesheet" href="lib/css/main.min.css"/>
+   <link rel = "stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/bttn.css/0.2.4/bttn.css">
+  
+  <!-- SCRIPTS -->
+  <script src="lib/js/main.min.js"></script>
+  <!-- Custom Scripts -->
+  <script type="text/javascript" src="js/dashboard.min.js"></script>
+  <style>
+      .selected {
+          background-color:rgb(130, 90, 221);
+          color:rgb(255, 255, 255);
+          font-weight:bold;
+      }
+      </style>
+  <!--<style>
+    /* MODAL STYLES
+-------------------------------*/
+modal {
+    /* modals are hidden by default */
+    display: none;
+
+    .modal {
+        /* modal container fixed across whole screen */
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        /* z-index must be higher than .modal-background */
+        z-index: 1000;
+        
+        /* enables scrolling for tall modals */
+        overflow: auto;
+
+        .modal-body {
+            padding: 20px;
+            background: #fff;
+
+            /* margin exposes part of the modal background */
+            margin: 40px;
+        }
+    }
+
+    .modal-background {
+        /* modal background fixed across whole screen */
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        /* semi-transparent black  */
+        background-color: #000;
+        opacity: 0.75;
+        
+        /* z-index must be below .modal and above everything else  */
+        z-index: 900;
+    }
+}
+
+body.modal-open {
+    /* body overflow is hidden to hide main scrollbar when modal window is open */
+    overflow: hidden;
+}
+
+  </style>-->
+  
+</head>
+<body ng-controller="MasterCtrl">
+  <div id="page-wrapper" ng-class="{'open': toggle}" ng-cloak>
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper">
+      <ul class="sidebar">
+        <li class="sidebar-main">
+          <a ng-click="toggleSidebar()">
+            IIB Dashboard
+            <span class="menu-icon glyphicon glyphicon-transfer"></span>
+          </a>
+        </li>
+        <li class="sidebar-title">
+		<span style="color: white">List of Queue Managers</span></li>
+		<div ng-repeat="broker in brokerlist">
+			<!--<div ng-repeat="(key2,value) in dataSet">-->
+				<li class="sidebar-list" >
+					<a href="#"><button  class="sidebar-list" style="color: black" ng-click="openMainRow(broker.id)" >{{broker.brokerName}}</button>
+						<!--<span class="menu-icon fa fa-table"></span>-->
+					</a>
+				</li>
+			<!--<div>-->
+		</div>
+      </ul>
+    </div>
+    <!-- End Sidebar -->
+
+    <div id="content-wrapper">
+      <div class="page-content">
+
+        <!-- Header Bar -->
+		 
+        <div class="row header">
+          <div class="col-xs-12">
+            <div class="user pull-right">
+            <!--  <div class="item dropdown">
+                <a href="#" class="dropdown-toggle">
+                  <img src="img/avatar.jpg">
+                </a>
+                <ul class="dropdown-menu dropdown-menu-right">
+                  <li class="dropdown-header">
+                    Joe Bloggs
+                  </li>
+                  <li class="divider"></li>
+                  <li class="link">
+                    <a href="#">
+                      Profile
+                    </a>
+                  </li>
+                  <li class="link">
+                    <a href="#">
+                      Menu Item
+                    </a>
+                  </li>
+                  <li class="link">
+                    <a href="#">
+                      Menu Item
+                    </a>
+                  </li>
+                  <li class="divider"></li>
+                  <li class="link">
+                    <a href="#">
+                      Logout
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div class="item dropdown">
+               <a href="#" class="dropdown-toggle">
+                  <i class="fa fa-bell-o"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-right">
+                  <li class="dropdown-header">
+                    Notifications
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="#">Server Down!</a>
+                  </li>
+                </ul>
+              </div>  -->
+            </div>
+            <div class="meta">
+              <div class="page">
+                Dashboard
+              </div>
+              <div class="breadcrumb-links">
+                Home / Dashboard
+              </div>
+            </div>
+          </div>
+        </div>
+		
+        <!-- End Header Bar -->
+
+        <!-- Main Content -->
+       <!-- <div ui-view></div>-->
+   
+       <!-- Main Option Row Starts-->
+        <div class="row" style="height: 46px;" ng-if="brokerOptions==true" id="mainOptionRow">
+          
+          <div>
+            <div class="col-lg-3 col-md-6 col-xs-12" style="width: 180px;"> 
+              <button class="bttn-pill bttn-md bttn-success"  ng-click="openQueue()">Queues</button>
+            </div>
+            <div class="col-lg-3 col-md-6 col-xs-12" style="width: 180px;"> 
+              <button class="bttn-pill bttn-md bttn-success"  ng-click="openChannel()">Channels</button>
+            </div>
+            <div class="col-lg-3 col-md-6 col-xs-12" style="width: 180px;"> 
+              <button class="bttn-pill bttn-md bttn-success"  ng-click="openTroubleShoot()">Troubleshooting</button>
+            </div>   
+          </div>
+        </div>
+        <!-- Main Option Row Ends-->
+
+        <!-- Queue Status Block -->
+        <div class="row" ng-if="valueReveal" id="queueStatusBlock">
+          <div class="col-lg-4 row-lg-12" ng-if="openQM">
+            <rd-widget>
+                <div class="widget">
+                  <rd-widget-header icon="fa-tasks" title="Queue List" class="ng-scope ng-isolate-scope">
+                      <select ng-model="selected" ng-options="t.queueType for t in typeOfQueues"  ng-change="callQueueSubtype(selected.queueType)">
+                          <option value="">Select Queue Type</option>
+                      </select>
+                  </rd-widget-header>
+                  <rd-widget-body classes="medium no-padding" class="ng-scope ng-isolate-scope" ng-if="showQueueDropDwn">
+                    <div class="widget-body medium no-padding" ng-class="classes">
+                      <rd-loading ng-show="loading" class="ng-hide">
+                        <div class="loading">
+                          <div class="double-bounce1"></div>
+                          <div class="double-bounce2"></div>
+                        </div>
+                      </rd-loading>
+                    <div ng-hide="loading" class="widget-content">
+                      <div class="table-responsive ng-scope">
+                        <table class="table">
+                          <tr>
+                            <td><p><input type="text" ></p></td>
+                          </tr>
+                          <tbody>
+                            <tr ng-repeat="q in propertyValue" ng-class="{'selected':$index == selectedRow}"ng-click="queueDesc($index)">
+                              <td >{{q}}</td>
+                            </tr>	
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </rd-widget-body>
+              </div>
+            </rd-widget>
+          </div>
+          <div class="col-lg-6" ng-if="propertiesShown">
+              <rd-widget>
+                  <div class="widget">
+                    <rd-widget-header icon="fa-tasks" title="Properties" class="ng-scope ng-isolate-scope"></rd-widget-header>
+                    <rd-widget-body classes="medium no-padding" class="ng-scope ng-isolate-scope">
+                      <div class="widget-body medium no-padding" ng-class="classes">
+                        <rd-loading ng-show="loading" class="ng-hide">
+                          <div class="loading">
+                            <div class="double-bounce1"></div>
+                            <div class="double-bounce2"></div>
+                          </div>
+                        </rd-loading>
+                      <div ng-hide="loading" class="widget-content">
+                        <div class="table-responsive ng-scope">
+                          <table class="table">
+                            <!--<tbody ng-repeat="(key, dataSet) in queueDetails">-->
+                                <!-- <tr>
+                                    <td>Inhibition</td>
+                                    <td>True</td>
+                                    <td><button class="bttn-gradient bttn-md bttn-primary">Allow</button></td>
+                                    <td><button ng-click="openModal('custom-modal-1')">Open Modal 1</button></td>
+                                  </tr> -->
+                            <tbody>
+                              <tr ng-repeat="(key2,value) in queueDetails">
+                                <td>{{key2 | keyFilter}}</td>
+                                <td>{{value}}</td>
+                                <!--<td><span class="text-success"><i class="fa fa-check"></i></span></td>-->
+                              </tr>	
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </rd-widget-body>
+                </div>
+              </rd-widget>
+            </div>
+        </div>
+        <!-- Queue Status Block End-->
+
+        <!-- Channel Status Block -->
+        <div class="row" ng-if="valueReveal" id="channelStatusBlock">
+
+            <div class="col-lg-6" ng-if="openChn">
+                <rd-widget>
+                    <div class="widget">
+                      <rd-widget-header icon="fa-tasks" title="Channel Stats" class="ng-scope ng-isolate-scope"></rd-widget-header>
+                      <rd-widget-body classes="medium no-padding" class="ng-scope ng-isolate-scope">
+                        <div class="widget-body medium no-padding" ng-class="classes">
+                          <rd-loading ng-show="loading" class="ng-hide">
+                            <div class="loading">
+                              <div class="double-bounce1"></div>
+                              <div class="double-bounce2"></div>
+                            </div>
+                          </rd-loading>
+                        <div ng-hide="loading" class="widget-content">
+                          <div class="table-responsive ng-scope">
+                            <table class="table">
+                              <!--<tbody ng-repeat="(key, dataSet) in channelStats">-->
+                              <tbody ng-repeat="(key2,dataset) in channelStats">
+                                  <!-- <tr>
+                                      <td>Inhibition</td>
+                                      <td>True</td>
+                                      <td><button class="bttn-gradient bttn-md bttn-primary">Allow</button></td>
+                                      <td><button ng-click="openModal('custom-modal-1')">Open Modal 1</button></td>
+                                    </tr> -->
+                                <tr ng-repeat="(key3,value3) in dataset">
+                                  <td>{{key3}}</td>
+                                  <td>{{value3}}</td>
+                                  <!-- <td><span class="text-success"><i class="fa fa-check"></i></span></td> -->
+                                </tr>	
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </rd-widget-body>
+                  </div>
+                </rd-widget>
+              </div>
+        </div>
+        <!-- Channel Status Block End-->
+
+        <!-- TroubleShoot Block -->
+        <div class="row" ng-if="valueReveal && openTroub" id="troubleShootBlock">
+
+            <div class="col-lg-6">
+                <rd-widget>
+                    <div class="widget">
+                      <rd-widget-header icon="fa-tasks" title="Problematic Queues" class="ng-scope ng-isolate-scope"></rd-widget-header>
+                      <rd-widget-body classes="medium no-padding" class="ng-scope ng-isolate-scope">
+                        <div class="widget-body medium no-padding" ng-class="classes">
+                          <rd-loading ng-show="loading" class="ng-hide">
+                            <div class="loading">
+                              <div class="double-bounce1"></div>
+                              <div class="double-bounce2"></div>
+                            </div>
+                          </rd-loading>
+                        <div ng-hide="loading" class="widget-content">
+                          <div class="table-responsive ng-scope">
+                            <h4 ng-if="pFlag && openTroub">Please report to IIB Support team</h4><br />
+                            <table class="table">
+                              <tbody">
+                              <!--<tbody  ng-repeat="(key, dataSet) in problemQueues>-->
+                                  <!-- <tr>
+                                      <td>Inhibition</td>
+                                      <td>True</td>
+                                      <td><button class="bttn-gradient bttn-md bttn-primary">Allow</button></td>
+                                      <td><button ng-click="openModal('custom-modal-1')">Open Modal 1</button></td>
+                                    </tr> -->
+                                <tr ng-repeat="key1 in problemQueues">
+                                  <td>{{key1.qname}}</td>
+                                  <!-- <td ng-show="test1!=null">{{value1}}</td> -->
+                                </tr>	
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </rd-widget-body>
+                  </div>
+                </rd-widget>
+              </div>
+        </div>
+        <!-- TroubleShoot Block -->
+
+      </div><!-- End Page Content -->
+    </div><!-- End Content Wrapper -->
+  </div><!-- End Page Wrapper -->
+</body>
+</html>
