@@ -10,8 +10,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -66,21 +68,35 @@ public class Dashboard {
 	}
 	
 	@CrossOrigin(allowedHeaders = "Access-Control-Allow-Origin")
-	@RequestMapping(value = "/updatequeuestatus/{name}", method = RequestMethod.PUT)
-	public void removePutInhibition(@PathVariable("name") String name) throws Exception
-	{
-		final String queueName = "TEST";  
-		MQQueue queue = null ;
-		int openOptions = MQConstants.MQOO_FAIL_IF_QUIESCING | MQConstants.MQOO_SET;
-		//queue = getQueueManager().accessQueue(queueName, openOptions, null, null, null);
+	@RequestMapping(value = "/listOfGetInhibitedQueues", method = RequestMethod.GET)
+	@ResponseBody
+	public ArrayList listofGetInhibitedQueues() throws Exception {
 		QueueManager qm=new QueueManager("unxs0614.ghanp.kfplc.com", 1430, "MQPREPRDSUP.SVRCONN", "FMQINST1");
-		int option1 = qm.getQueuePutStatus(queueName);
-		if (option1==1){
-			System.out.println("Start mesage sending");
+		return qm.getQueueGetStatus();
+	}
+	
+	@CrossOrigin(allowedHeaders = "Access-Control-Allow-Origin")
+	@RequestMapping(value = "/updatequeuestatus/{name}", method = RequestMethod.GET)
+	public String removeGetInhibition(@PathVariable("name") String qname) throws Exception
+	{
+		//final String queueName = "TEST"; 
+		//public String removeGetInhibition(@RequestParam("qname") String qname) throws Exception
+		//public String removeGetInhibition(@RequestBody String qname) throws Exception
+		System.out.println("\nFrom Resource "+qname+"\n");
+		//QueueManager qm=new QueueManager("unxs0614.ghanp.kfplc.com", 1430, "MQPREPRDSUP.SVRCONN", "FMQINST1");
+		MQRead readQ = new MQRead();
+		//readQ.removeInhibition1(qname);
+		//int openOptions = MQConstants.MQOO_FAIL_IF_QUIESCING | MQConstants.MQOO_SET;
+		//queue = qm.accessQueue(qname, MQC.MQOO_INQUIRE | MQC.MQOO_INPUT_AS_Q_DEF, null, null, null);
+		//QueueManager qm=new QueueManager("unxs0614.ghanp.kfplc.com", 1430, "MQPREPRDSUP.SVRCONN", "FMQINST1");
+		//int option1 = qm.getQueuePutStatus(qname);
+		//if (option1==1){
+		/*	System.out.println("Start mesage sending");
 			queue.setInhibitPut(MQC.MQQA_PUT_ALLOWED);
-			System.out.println("Queue put allowed successfully");
+			System.out.println("Queue put allowed successfully");*/
 
-		}
+		//}
+		return readQ.removeInhibition1(qname);
 		
 	}
 	
@@ -92,6 +108,7 @@ public class Dashboard {
 		channelname = "DYNATRACE.SVRCONN";
 		return qm.channelRestart(channelname);
 	}
+	
 	
 	
 
