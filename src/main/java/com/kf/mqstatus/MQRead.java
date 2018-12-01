@@ -36,6 +36,12 @@ import com.ibm.mq.constants.CMQC;
 import com.ibm.mq.constants.CMQCFC;
 import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.jms.MQConnectionFactory;
+import com.ibm.mq.pcf.MQCFST;
+import com.ibm.mq.pcf.PCFAgent;
+import com.ibm.mq.pcf.PCFException;
+import com.ibm.mq.pcf.PCFMessage;
+import com.ibm.mq.pcf.PCFMessageAgent;
+import com.ibm.mq.pcf.PCFParameter;
 
 public class MQRead {
 
@@ -160,16 +166,7 @@ public class MQRead {
 
 			System.out.println("List value returned in main:"+catchvalue.size());
 
-			//readQ.listOfQueue();
-
-			//System.out.println("*");
-
-			//readQ.checkChannelStatus();
-              //readQ.listOfAliasQueue1();
-			//readQ.getStatistics();
 			readQ.removeGetInhibition(qname);
-			//readQ.removePutInhibition();
-			//readQ.channelRestart();
 
 		}
 
@@ -195,6 +192,56 @@ public class MQRead {
 
 	}
 	
+	public String removeInhibition2(String qname) throws Exception {
+		String[] args = null;
+		MQRead readQ = new MQRead();
+
+		try
+
+		{
+
+			Calendar start = Calendar.getInstance();
+
+			start.set(2018, 2, 20, 1, 10, 0);
+
+			Calendar end = Calendar.getInstance();
+
+			end.set(2018, 2, 25, 23, 10, 0);
+
+			readQ.init(args);
+
+			readQ.selectQMgr();
+
+			List catchvalue = readQ.read(start,end);
+
+			System.out.println("List value returned in main:"+catchvalue.size());
+
+			readQ.removePutInhibition(qname);
+
+		}
+
+		catch (IllegalArgumentException e)
+
+		{
+
+			System.exit(1);
+
+		}
+
+		catch (MQException e)
+
+		{
+
+			System.out.println(e);
+
+			System.exit(1);
+
+		}
+		
+		return "SUCCESS";
+
+	}
+
 	public void selectQMgr() throws MQException
 
 	{
@@ -868,9 +915,9 @@ public class MQRead {
 		return flag;
 	}
 
-	public void removePutInhibition() throws Exception
+	public void removePutInhibition(String qname) throws Exception
 	{
-		final String queueName = "TEST";  
+		final String queueName = qname;  
 		MQQueue queue = null ;
 		int openOptions = MQConstants.MQOO_FAIL_IF_QUIESCING | MQConstants.MQOO_SET;
 		queue = getQueueManager().accessQueue(queueName, openOptions, null, null, null);
