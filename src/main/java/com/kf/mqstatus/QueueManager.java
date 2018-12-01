@@ -447,94 +447,103 @@ public class QueueManager {
 		return queuelist;
 
 	}
-
-	public String channelRestart(String channelname) throws MQException
+/*
+	public String channelRestart(String chnlName) throws MQException
 	{
-		String checkStatus = "";
-		String channelName = "";
-		
-
-		PCFMessageAgent agent = new PCFMessageAgent("unxs0614.ghanp.kfplc.com", 1430, "MQPREPRDSUP.SVRCONN");
-		
-
-		// build a request
-		PCFMessage request = new PCFMessage(CMQCFC.MQCMD_INQUIRE_CHANNEL_STATUS);
-		// add a parameter designating the name of the channel for which status
-		// is requested
-
-		request.addParameter(CMQCFC.MQCACH_CHANNEL_NAME, "*");
-
-		// add a parameter designating the instance type (current) desired
-
-		request.addParameter(CMQCFC.MQIACH_CHANNEL_INSTANCE_TYPE, CMQC.MQOT_CURRENT_CHANNEL);
-
-		PCFMessage[] responses;
-
-		try {
-			
-
-			responses = agent.send(request);
-
-			for (int j = 0; j < responses.length; j++) {
-
-				// get the channel name and trim the spaces
-
-				String temp = "";
-
-				temp = responses[j].getStringParameterValue(CMQCFC.MQCACH_CHANNEL_NAME);
-
-				channelName = temp.trim();
-
-				// System.out.println(channelName);
-
-				int chlStatus = responses[j].getIntParameterValue(CMQCFC.MQIACH_CHANNEL_STATUS);
-
-				System.out.println("channel status: " + chlStatus);
-
-				String[] chStatusText = {
-
-						"", "BINDING", "STARTING", "RUNNING/INACTIVE",
-
-						"STOPPING", "RETRYING", "STOPPED",
-
-						"REQUESTING", "PAUSED",
-
-						"", "", "", "", "INITIALIZING"
-
-				};
-				
-				if(channelName == "DYNATRACE.SVRCONN" && chlStatus!=3)
-				{
-					PCFMessage response;
-					PCFParameter [] parameters = new PCFParameter [] {
-					          new MQCFST (CMQCFC.MQCACH_CHANNEL_NAME, channelName),
-					          };
-					MQMessage [] pcfResponses = agent.send (CMQCFC.MQCMD_START_CHANNEL, 
-                             parameters);
-					response = new PCFMessage(pcfResponses[0]);
-				
-				}
-
-				checkStatus = chStatusText[chlStatus];
-
-				System.out.println("chl: " + channelName + " STATUS: " + checkStatus);
-
-			}
+	String checkStatus = "";
+	PCFAgent pcfAgent = null;
+	String channelName = chnlName;
 
 
-		}
+	PCFMessageAgent agent = new PCFMessageAgent("unxs0614.ghanp.kfplc.com", 1430, "MQPREPRDSUP.SVRCONN");
 
-		catch (IOException e) {
 
-			// TODO Auto-generated catch block
+	// build a request
 
-			e.printStackTrace();
+	//PCFMessage request = new PCFMessage (CMQCFC.MQCMD_INQUIRE_Q_NAMES);
+	PCFMessage request = new PCFMessage(CMQCFC.MQCMD_INQUIRE_CHANNEL_STATUS);
+	PCFMessage request2 = new PCFMessage(CMQCFC.MQCMD_INQUIRE_CHANNEL_STATUS);
+	// add a parameter designating the name of the channel for which status
+	// is requested
 
-		}
-		return channelName;
+	request.addParameter(CMQCFC.MQCACH_CHANNEL_NAME, "*");
+
+	// add a parameter designating the instance type (current) desired
+
+	request.addParameter(CMQCFC.MQIACH_CHANNEL_INSTANCE_TYPE, CMQC.MQOT_CURRENT_CHANNEL);
+
+	PCFMessage[] responses;
+
+	try {
+
+
+	responses = agent.send(request);
+
+	for (int j = 0; j < responses.length; j++) {
+
+	// get the channel name and trim the spaces
+
+	String temp = "";
+
+	temp = responses[j].getStringParameterValue(CMQCFC.MQCACH_CHANNEL_NAME);
+
+	channelName = temp.trim();
+
+	// System.out.println(channelName);
+
+	int chlStatus = responses[j].getIntParameterValue(CMQCFC.MQIACH_CHANNEL_STATUS);
+
+	System.out.println("channel status: " + chlStatus);
+
+	String[] chStatusText = {
+
+	"", "BINDING", "STARTING", "RUNNING/INACTIVE",
+
+	"STOPPING", "RETRYING", "STOPPED",
+
+	"REQUESTING", "PAUSED",
+
+	"", "", "", "", "INITIALIZING"
+
+	};
+
+	if(chlStatus!=3)
+	{
+	PCFMessage response;
+	PCFParameter [] parameters = new PCFParameter [] {
+	new MQCFST (CMQCFC.MQCACH_CHANNEL_NAME, channelName),
+	};
+	//PCFMessage   request2 = new PCFMessage (CMQCFC.MQCMD_START_CHANNEL);
+	//request2.addParameter(CMQCFC.MQCMD_START_CHANNEL,channelName);
+	//responses = agent.send (request2);
+	MQMessage [] pcfResponses = agent.send (CMQCFC.MQCMD_START_CHANNEL, 
+	parameters);
+	response = new PCFMessage(pcfResponses[0]);
+	//System.out.println(pcfResponses.toString());
+
+	}
+
+	checkStatus = chStatusText[chlStatus];
+
+	System.out.println("chl: " + channelName + " STATUS: " + checkStatus);
+
+	}
+
+
+	}
+
+	catch (IOException e) {
+
+	// TODO Auto-generated catch block
+
+	e.printStackTrace();
 
 	}
 	
+	return "SUCCESS";
+
+	}
+*/
 	public int getQueuePutStatus(String queueName) throws MQException, Exception
 	{
 		int flag = 0 ;
@@ -647,4 +656,150 @@ public class QueueManager {
 
 	return queueManager;
 	}
+	
+	public ArrayList<String> getQueuePutStatus() throws MQException, Exception
+	{
+		int flag = 0 ;
+		MQQueue queue = null ;
+		boolean queueInhibitflag=false;
+		ArrayList<String> queuelist  = new ArrayList<String>();
+		String queueNames[]={"TEST","TEST1","TEST2","SALESORDER.ATG.INBOUND.WMB","SEQUENTIAL.ECCGENERIC.WMB.OUTBOUND.WMB","ZCRMXIF_PARTNER_SAVE01.CRM.INBOUND.LOCAL"};
+	
+		for(int i =0;i<queueNames.length;i++)
+		{
+			String queueName = queueNames[i];
+			queue = qmgr.accessQueue(queueName, MQC.MQOO_INQUIRE | MQC.MQOO_INPUT_AS_Q_DEF, null, null, null);
+			flag = queue.getInhibitPut();
+			if(flag==1) {
+				queuelist.add(queueNames[i]);
+				queueInhibitflag = true;
+			}//if(flag==1) {
+			else
+				System.out.println(queueName+" Queue is not inhibited\n");
+			if (queue != null)
+			{
+				try
+				{
+				queue.close() ;
+				}
+				catch (MQException ex)
+				{
+					System.out.println("ignoring error closing queue: " ) ;
+				}
+			}//if (queue != null)
+		}//For Loop
+	
+		if(queueInhibitflag == false) {
+			
+			System.out.println("\nNo Queues are inhibited");
+			queuelist.add("No Queues are inhibited");
+			
+		} //if(queueInhibitflag == false) {
+		
+		return queuelist;
+	}
+	
+	public ArrayList getChannelStatus() throws MQException
+	{
+	String checkStatus = "";
+	PCFAgent pcfAgent = null;
+	String channelName = "";
+
+
+	PCFMessageAgent agent = new PCFMessageAgent("unxs0614.ghanp.kfplc.com", 1430, "MQPREPRDSUP.SVRCONN");
+
+
+	// build a request
+
+	//PCFMessage request = new PCFMessage (CMQCFC.MQCMD_INQUIRE_Q_NAMES);
+	PCFMessage request = new PCFMessage(CMQCFC.MQCMD_INQUIRE_CHANNEL_STATUS);
+	PCFMessage request2 = new PCFMessage(CMQCFC.MQCMD_INQUIRE_CHANNEL_STATUS);
+	// add a parameter designating the name of the channel for which status
+	// is requested
+
+	request.addParameter(CMQCFC.MQCACH_CHANNEL_NAME, "*");
+
+	// add a parameter designating the instance type (current) desired
+
+	request.addParameter(CMQCFC.MQIACH_CHANNEL_INSTANCE_TYPE, CMQC.MQOT_CURRENT_CHANNEL);
+
+	PCFMessage[] responses;
+	boolean checkFlag=false;
+	ArrayList<String> chnllist  = new ArrayList<String>();
+
+	try {
+
+
+	responses = agent.send(request);
+
+	for (int j = 0; j < responses.length; j++) {
+
+	// get the channel name and trim the spaces
+
+	String temp = "";
+
+	temp = responses[j].getStringParameterValue(CMQCFC.MQCACH_CHANNEL_NAME);
+
+	channelName = temp.trim();
+
+	// System.out.println(channelName);
+
+	int chlStatus = responses[j].getIntParameterValue(CMQCFC.MQIACH_CHANNEL_STATUS);
+
+	System.out.println("channel status: " + chlStatus);
+
+	String[] chStatusText = {
+
+	"", "BINDING", "STARTING", "RUNNING/INACTIVE",
+
+	"STOPPING", "RETRYING", "STOPPED",
+
+	"REQUESTING", "PAUSED",
+
+	"", "", "", "", "INITIALIZING"
+
+	};
+
+	if(chlStatus!=3)
+	{
+		chnllist.add(channelName);
+		checkFlag=true;
+	}
+	}
+	}
+	catch (IOException e) {
+
+	// TODO Auto-generated catch block
+
+	e.printStackTrace();
+
+	}
+
+	if(checkFlag==false)
+		chnllist.add("All channels are working fine");
+
+	return chnllist;
+	}
+
+	public String channelRestart(String channelName) throws MQException, IOException{
+
+
+	PCFMessageAgent agent = new PCFMessageAgent("unxs0614.ghanp.kfplc.com", 1430, "MQPREPRDSUP.SVRCONN");
+	PCFMessage response;
+	PCFParameter [] parameters = new PCFParameter [] {
+	new MQCFST (CMQCFC.MQCACH_CHANNEL_NAME, channelName),
+	};
+	//PCFMessage   request2 = new PCFMessage (CMQCFC.MQCMD_START_CHANNEL);
+	//request2.addParameter(CMQCFC.MQCMD_START_CHANNEL,channelName);
+	//responses = agent.send (request2);
+	MQMessage [] pcfResponses = agent.send (CMQCFC.MQCMD_START_CHANNEL, 
+	parameters);
+	response = new PCFMessage(pcfResponses[0]);
+	//System.out.println(pcfResponses.toString());
+	//System.out.println("chl: " + channelName + " STATUS: " + checkStatus);
+
+	return "SUCCESS";
+	}
+
+
 }
