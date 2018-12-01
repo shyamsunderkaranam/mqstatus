@@ -74,38 +74,49 @@ public class Dashboard {
 		QueueManager qm=new QueueManager("unxs0614.ghanp.kfplc.com", 1430, "MQPREPRDSUP.SVRCONN", "FMQINST1");
 		return qm.getQueueGetStatus();
 	}
-	
+
 	@CrossOrigin(allowedHeaders = "Access-Control-Allow-Origin")
-	@RequestMapping(value = "/updatequeuestatus/{name}", method = RequestMethod.GET)
+	@RequestMapping(value = "/listOfPutInhibitedQueues", method = RequestMethod.GET)
+	@ResponseBody
+	public ArrayList listofPutInhibitedQueues() throws Exception {
+		QueueManager qm=new QueueManager("unxs0614.ghanp.kfplc.com", 1430, "MQPREPRDSUP.SVRCONN", "FMQINST1");
+		return qm.getQueuePutStatus();
+	}
+
+	@CrossOrigin(allowedHeaders = "Access-Control-Allow-Origin")
+	@RequestMapping(value = "/listOfChannelsStopped", method = RequestMethod.GET)
+	@ResponseBody
+	public ArrayList getChannelStatus() throws Exception {
+		QueueManager qm=new QueueManager("unxs0614.ghanp.kfplc.com", 1430, "MQPREPRDSUP.SVRCONN", "FMQINST1");
+		return qm.getChannelStatus();
+	}
+
+	@CrossOrigin(allowedHeaders = "Access-Control-Allow-Origin")
+	@RequestMapping(value = "/updatequeuestatusGet/{name}", method = RequestMethod.GET)
 	public String removeGetInhibition(@PathVariable("name") String qname) throws Exception
 	{
-		//final String queueName = "TEST"; 
-		//public String removeGetInhibition(@RequestParam("qname") String qname) throws Exception
-		//public String removeGetInhibition(@RequestBody String qname) throws Exception
 		System.out.println("\nFrom Resource "+qname+"\n");
-		//QueueManager qm=new QueueManager("unxs0614.ghanp.kfplc.com", 1430, "MQPREPRDSUP.SVRCONN", "FMQINST1");
 		MQRead readQ = new MQRead();
-		//readQ.removeInhibition1(qname);
-		//int openOptions = MQConstants.MQOO_FAIL_IF_QUIESCING | MQConstants.MQOO_SET;
-		//queue = qm.accessQueue(qname, MQC.MQOO_INQUIRE | MQC.MQOO_INPUT_AS_Q_DEF, null, null, null);
-		//QueueManager qm=new QueueManager("unxs0614.ghanp.kfplc.com", 1430, "MQPREPRDSUP.SVRCONN", "FMQINST1");
-		//int option1 = qm.getQueuePutStatus(qname);
-		//if (option1==1){
-		/*	System.out.println("Start mesage sending");
-			queue.setInhibitPut(MQC.MQQA_PUT_ALLOWED);
-			System.out.println("Queue put allowed successfully");*/
-
-		//}
 		return readQ.removeInhibition1(qname);
 		
 	}
 	
 	@CrossOrigin(allowedHeaders = "Access-Control-Allow-Origin")
-	@RequestMapping(value = "/updatechannelStatus/DYNATRACE.SVRCONN", method = RequestMethod.PUT)
+	@RequestMapping(value = "/updatequeuestatusPut/{name}", method = RequestMethod.GET)
+	public String removePutInhibition(@PathVariable("name") String qname) throws Exception
+	{
+		System.out.println("\nFrom Resource "+qname+"\n");
+		MQRead readQ = new MQRead();
+		return readQ.removeInhibition2(qname);
+		
+	}
+
+	@CrossOrigin(allowedHeaders = "Access-Control-Allow-Origin")
+	@RequestMapping(value = "/updatechannelStatus/{name}", method = RequestMethod.PUT)
 	@ResponseBody
-	public String mqChannelUpdateStatus(String channelname) throws Exception{
+	public String mqChannelUpdateStatus(@PathVariable("name") String channelname) throws Exception{
 		QueueManager qm=new QueueManager("unxs0614.ghanp.kfplc.com", 1430, "MQPREPRDSUP.SVRCONN", "FMQINST1");
-		channelname = "DYNATRACE.SVRCONN";
+		//channelname = "DYNATRACE.SVRCONN";
 		return qm.channelRestart(channelname);
 	}
 	
