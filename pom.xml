@@ -28,6 +28,9 @@
 		<version.com.ibm.mqjms>1.0.0</version.com.ibm.mqjms>
 		<version.com.ibm.mq.allclient>1.0.0</version.com.ibm.mq.allclient>
 		<version.com.ibm.mq.jmqi>1.0.0</version.com.ibm.mq.jmqi>
+		<version.javax.jms>3.1.2</version.javax.jms>
+		<version.javax.jms-api>2.0</version.javax.jms-api>
+
 	</properties>
 
 	<dependencies>
@@ -49,6 +52,7 @@
          <!-- <scope>system</scope>
          <systemPath>${project.basedir}/lib/com.ibm.mq.jar</systemPath> -->
       </dependency>
+      
       <dependency>
          <groupId>com.ibm.mq.pcf</groupId>
          <artifactId>com.ibm.mq.pcf</artifactId>
@@ -79,8 +83,21 @@
          <!-- <scope>system</scope>
          <systemPath>${project.basedir}/lib/com.ibm.mq.jmqi.jar</systemPath> -->
       </dependency>
-	 
-	</dependencies>
+      <dependency>
+         <groupId>javax.jms</groupId>
+         <artifactId>javax.jms</artifactId>
+         <version>${version.javax.jms}</version>
+         <!-- <scope>system</scope>
+         <systemPath>${project.basedir}/lib/com.ibm.mq.jmqi.jar</systemPath> -->
+      </dependency>
+      <dependency>
+         <groupId>javax.jms-api</groupId>
+         <artifactId>javax.jms-api</artifactId>
+         <version>${version.javax.jms-api}</version>
+         <!-- <scope>system</scope>
+         <systemPath>${project.basedir}/lib/com.ibm.mq.jmqi.jar</systemPath> -->
+      </dependency>  
+      </dependencies>
 
 	<build>
 		<plugins>
@@ -177,6 +194,40 @@
 							<goal>install-file</goal>
 						</goals>
 					</execution>
+
+					 <execution>
+						<id>install-external-javax-jms-jar</id>
+						<phase>clean</phase>
+						<configuration>
+							<repositoryLayout>default</repositoryLayout>
+							<groupId>javax.jms</groupId>
+							<artifactId>javax.jms</artifactId>
+							<version>${version.javax.jms}</version>
+							<file>${project.basedir}\lib\javax.jms.jar</file>
+							<packaging>jar</packaging>
+							<generatePom>true</generatePom>
+						</configuration>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>install-external-javax-jms-api-jar</id>
+						<phase>clean</phase>
+						<configuration>
+							<repositoryLayout>default</repositoryLayout>
+							<groupId>javax.jms-api</groupId>
+							<artifactId>javax.jms-api</artifactId>
+							<version>${version.javax.jms-api}</version>
+							<file>${project.basedir}\lib\javax.jms-api.jar</file>
+							<packaging>jar</packaging>
+							<generatePom>true</generatePom>
+						</configuration>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+					</execution>
+					
 				</executions>
 			</plugin>
 			 
