@@ -139,10 +139,10 @@
                       <div class="table-responsive ng-scope">
                         <table class="table">
                           <tr>
-                            <td><p><input type="text" ></p></td>
+                            <td><p>Search: <input type="text" ng-model="qSearch"></p></td>
                           </tr>
                           <tbody>
-                            <tr ng-repeat="q in propertyValue" ng-class="{'selected':$index == selectedRow}"ng-click="queueDesc($index)">
+                            <tr ng-repeat="q in propertyValue | filter: qSearch" ng-class="{'selected':$index == selectedRow}"ng-click="queueDesc($index)">
                               <td >{{q}}</td>
                             </tr>	
                           </tbody>
