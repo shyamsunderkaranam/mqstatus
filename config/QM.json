@@ -1,0 +1,33 @@
+[
+	{
+			"Name": "FMQINST1",
+			"Server": "unxs0614.ghanp.kfplc.com",
+			"channel": "MQPREPRDSUP.SVRCONN",
+			"port": 1430
+	},
+	{
+			"Name": "QMQINST1",
+			"Server": "unxs0634.ghanp.kfplc.com",
+			"channel": "MQPREPRDSUP.SVRCONN",
+			"port": 1430
+	},
+	{
+			"Name": "VMQINST1",
+			"Server": "unxs0624.gha.kfplc.com",
+			"channel": "MQPREPRDSUP.SVRCONN",
+			"port": 1430
+	},
+	{
+			"Name": "VMQINST2",
+			"Server": "unxs0625.gha.kfplc.com",
+			"channel": "MQPREPRDSUP.SVRCONN",
+			"port": 1430
+	},
+	{
+			"Name": "VMQINST3",
+			"Server": "unxs0630.gha.kfplc.com",
+			"channel": "MQPREPRDSUP.SVRCONN",
+			"port": 1430
+	}	
+
+]
