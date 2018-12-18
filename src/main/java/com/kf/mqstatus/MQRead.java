@@ -59,11 +59,14 @@ public class MQRead {
 
 	private MQConnectionFactory mqCF;
 
-	public MQRead()
-
-	{
-
-		super();
+	public MQRead(String host, int port, String channel, String manager) throws MQException {
+		this.hostname = host;
+		this.port = port;
+		this.channel = channel;
+		this.qManager = manager;
+		this.port = port;
+		//System.out.println("Host:"+host+" port:"+port+" channel:"+channel+" QManager:"+manager);
+		
 
 	}
 
@@ -87,7 +90,7 @@ public class MQRead {
 
 	{
 
-		MQRead readQ = new MQRead();
+		/*MQRead readQ = new MQRead(hostname,port,channel,qManager);
 
 		try
 
@@ -138,13 +141,13 @@ public class MQRead {
 
 			System.exit(1);
 
-		}
+		}*/
 
 	}
 
 	public String removeInhibition1(String qname) throws Exception {
 		String[] args = null;
-		MQRead readQ = new MQRead();
+		//MQRead readQ = new MQRead();
 
 		try
 
@@ -158,15 +161,15 @@ public class MQRead {
 
 			end.set(2018, 2, 25, 23, 10, 0);
 
-			readQ.init(args);
+			init(args);
 
-			readQ.selectQMgr();
+			selectQMgr();
 
-			List catchvalue = readQ.read(start,end);
+			List catchvalue = read(start,end);
 
 			System.out.println("List value returned in main:"+catchvalue.size());
 
-			readQ.removeGetInhibition(qname);
+			removeGetInhibition(qname);
 
 		}
 
@@ -194,7 +197,7 @@ public class MQRead {
 	
 	public String removeInhibition2(String qname) throws Exception {
 		String[] args = null;
-		MQRead readQ = new MQRead();
+		//MQRead readQ = new MQRead();
 
 		try
 
@@ -208,15 +211,15 @@ public class MQRead {
 
 			end.set(2018, 2, 25, 23, 10, 0);
 
-			readQ.init(args);
+			init(args);
 
-			readQ.selectQMgr();
+			selectQMgr();
 
-			List catchvalue = readQ.read(start,end);
+			List catchvalue = read(start,end);
 
 			System.out.println("List value returned in main:"+catchvalue.size());
 
-			readQ.removePutInhibition(qname);
+			removePutInhibition(qname);
 
 		}
 
@@ -891,12 +894,12 @@ public class MQRead {
 		return queuelist;
 	}
 
-	public int getQueuePutStatus() throws MQException, Exception
+	public int getQueuePutStatus(String qName) throws MQException, Exception
 	{
 		int flag = 0 ;
 		MQQueue queue = null ;
 
-		final String queueName = "TEST";
+		final String queueName = qName;
 		queue = getQueueManager().accessQueue(queueName, MQC.MQOO_INQUIRE | MQC.MQOO_INPUT_AS_Q_DEF, null, null, null);
 		flag = queue.getInhibitPut();
 
@@ -921,7 +924,7 @@ public class MQRead {
 		MQQueue queue = null ;
 		int openOptions = MQConstants.MQOO_FAIL_IF_QUIESCING | MQConstants.MQOO_SET;
 		queue = getQueueManager().accessQueue(queueName, openOptions, null, null, null);
-		int option1 = getQueuePutStatus();
+		int option1 = getQueuePutStatus(qname);
 		if (option1==1){
 			System.out.println("Start mesage sending");
 			queue.setInhibitPut(MQC.MQQA_PUT_ALLOWED);
