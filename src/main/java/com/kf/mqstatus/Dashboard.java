@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -30,7 +32,18 @@ public class Dashboard {
 	}
 
 	@CrossOrigin(allowedHeaders = "Access-Control-Allow-Origin")
-	@RequestMapping(value = "/getStatistics/{name}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{qmName}/listOfAllQueues", method = RequestMethod.GET)
+	@ResponseBody
+	public JSONArray getAllQueues(@PathVariable("qmName") String qmName) throws Exception {
+		QueueManagerDAO qmd=new QueueManagerDAO();
+		JSONObject qmDetails = qmd.getqmsDetails(qmName);
+		int portNumber = ((Long)qmDetails.get("port")).intValue();
+		QueueManager qm=new QueueManager(qmDetails.get("Server").toString(),portNumber, qmDetails.get("channel").toString(), qmDetails.get("Name").toString());
+		return qm.listOfQueues();
+	}
+	
+	@CrossOrigin(allowedHeaders = "Access-Control-Allow-Origin")
+	@RequestMapping(value = "/{qmName}/getStatistics/{name}", method = RequestMethod.GET)
 	@ResponseBody
 	public Map mqStatus(@PathVariable("name") String name) throws Exception {
 	QueueManager qm=new QueueManager("unxs0614.ghanp.kfplc.com", 1430, "MQPREPRDSUP.SVRCONN", "FMQINST1");
@@ -44,77 +57,103 @@ public class Dashboard {
 	}*/
 	
 	@CrossOrigin(allowedHeaders = "Access-Control-Allow-Origin")
-	@RequestMapping(value = "/listofLocalqueue", method = RequestMethod.GET)
+	@RequestMapping(value = "/{qmName}/listofLocalqueue", method = RequestMethod.GET)
 	@ResponseBody
-	public ArrayList listofqueues() throws Exception {
-		QueueManager qm=new QueueManager("unxs0614.ghanp.kfplc.com", 1430, "MQPREPRDSUP.SVRCONN", "FMQINST1");
+	public ArrayList listofqueues(@PathVariable("qmName") String qmName) throws Exception {
+		QueueManagerDAO qmd=new QueueManagerDAO();
+		JSONObject qmDetails = qmd.getqmsDetails(qmName);
+		int portNumber = ((Long)qmDetails.get("port")).intValue();
+		QueueManager qm=new QueueManager(qmDetails.get("Server").toString(),portNumber, qmDetails.get("channel").toString(), qmDetails.get("Name").toString());
 		return qm.listOfQueue();
 	}
 	
 	@CrossOrigin(allowedHeaders = "Access-Control-Allow-Origin")
-	@RequestMapping(value = "/listofAliasqueue", method = RequestMethod.GET)
+	@RequestMapping(value = "/{qmName}/listofAliasqueue", method = RequestMethod.GET)
 	@ResponseBody
-	public ArrayList listofAliasqueues() throws Exception {
-		QueueManager qm=new QueueManager("unxs0614.ghanp.kfplc.com", 1430, "MQPREPRDSUP.SVRCONN", "FMQINST1");
+	public ArrayList listofAliasqueues(@PathVariable("qmName") String qmName) throws Exception {
+		QueueManagerDAO qmd=new QueueManagerDAO();
+		JSONObject qmDetails = qmd.getqmsDetails(qmName);
+		int portNumber = ((Long)qmDetails.get("port")).intValue();
+		QueueManager qm=new QueueManager(qmDetails.get("Server").toString(),portNumber, qmDetails.get("channel").toString(), qmDetails.get("Name").toString());
 		return qm.listOfAliasQueue();
 	}
 	
 	@CrossOrigin(allowedHeaders = "Access-Control-Allow-Origin")
-	@RequestMapping(value = "/channelStatus", method = RequestMethod.GET)
+	@RequestMapping(value = "/{qmName}/channelStatus", method = RequestMethod.GET)
 	@ResponseBody
-	public Map mqChannelStatus() throws Exception {
-		QueueManager qm=new QueueManager("unxs0614.ghanp.kfplc.com", 1430, "MQPREPRDSUP.SVRCONN", "FMQINST1");
+	public Map mqChannelStatus(@PathVariable("qmName") String qmName) throws Exception {
+		QueueManagerDAO qmd=new QueueManagerDAO();
+		JSONObject qmDetails = qmd.getqmsDetails(qmName);
+		int portNumber = ((Long)qmDetails.get("port")).intValue();
+		QueueManager qm=new QueueManager(qmDetails.get("Server").toString(),portNumber, qmDetails.get("channel").toString(), qmDetails.get("Name").toString());
 		return qm.checkChannelStatus();
 	}
 	
 	@CrossOrigin(allowedHeaders = "Access-Control-Allow-Origin")
-	@RequestMapping(value = "/listOfGetInhibitedQueues", method = RequestMethod.GET)
+	@RequestMapping(value = "/{qmName}/listOfGetInhibitedQueues", method = RequestMethod.GET)
 	@ResponseBody
-	public ArrayList listofGetInhibitedQueues() throws Exception {
-		QueueManager qm=new QueueManager("unxs0614.ghanp.kfplc.com", 1430, "MQPREPRDSUP.SVRCONN", "FMQINST1");
+	public ArrayList listofGetInhibitedQueues(@PathVariable("qmName") String qmName) throws Exception {
+		QueueManagerDAO qmd=new QueueManagerDAO();
+		JSONObject qmDetails = qmd.getqmsDetails(qmName);
+		int portNumber = ((Long)qmDetails.get("port")).intValue();
+		QueueManager qm=new QueueManager(qmDetails.get("Server").toString(),portNumber, qmDetails.get("channel").toString(), qmDetails.get("Name").toString());
 		return qm.getQueueGetStatus();
 	}
 
 	@CrossOrigin(allowedHeaders = "Access-Control-Allow-Origin")
-	@RequestMapping(value = "/listOfPutInhibitedQueues", method = RequestMethod.GET)
+	@RequestMapping(value = "/{qmName}/listOfPutInhibitedQueues", method = RequestMethod.GET)
 	@ResponseBody
-	public ArrayList listofPutInhibitedQueues() throws Exception {
-		QueueManager qm=new QueueManager("unxs0614.ghanp.kfplc.com", 1430, "MQPREPRDSUP.SVRCONN", "FMQINST1");
+	public ArrayList listofPutInhibitedQueues(@PathVariable("qmName") String qmName) throws Exception {
+		QueueManagerDAO qmd=new QueueManagerDAO();
+		JSONObject qmDetails = qmd.getqmsDetails(qmName);
+		int portNumber = ((Long)qmDetails.get("port")).intValue();
+		QueueManager qm=new QueueManager(qmDetails.get("Server").toString(),portNumber, qmDetails.get("channel").toString(), qmDetails.get("Name").toString());
 		return qm.getQueuePutStatus();
 	}
 
 	@CrossOrigin(allowedHeaders = "Access-Control-Allow-Origin")
-	@RequestMapping(value = "/listOfChannelsStopped", method = RequestMethod.GET)
+	@RequestMapping(value = "/{qmName}/listOfChannelsStopped", method = RequestMethod.GET)
 	@ResponseBody
-	public ArrayList getChannelStatus() throws Exception {
-		QueueManager qm=new QueueManager("unxs0614.ghanp.kfplc.com", 1430, "MQPREPRDSUP.SVRCONN", "FMQINST1");
+	public ArrayList getChannelStatus(@PathVariable("qmName") String qmName) throws Exception {
+		QueueManagerDAO qmd=new QueueManagerDAO();
+		JSONObject qmDetails = qmd.getqmsDetails(qmName);
+		int portNumber = ((Long)qmDetails.get("port")).intValue();
+		QueueManager qm=new QueueManager(qmDetails.get("Server").toString(),portNumber, qmDetails.get("channel").toString(), qmDetails.get("Name").toString());
 		return qm.getChannelStatus();
 	}
 
 	@CrossOrigin(allowedHeaders = "Access-Control-Allow-Origin")
-	@RequestMapping(value = "/updatequeuestatusGet/{name}", method = RequestMethod.GET)
-	public String removeGetInhibition(@PathVariable("name") String qname) throws Exception
+	@RequestMapping(value = "/{qmName}/updatequeuestatusGet/{name}", method = RequestMethod.GET)
+	public String removeGetInhibition(@PathVariable("qmName") String qmName,@PathVariable("name") String qname) throws Exception
 	{
 		System.out.println("\nFrom Resource "+qname+"\n");
-		MQRead readQ = new MQRead();
+		QueueManagerDAO qmd=new QueueManagerDAO();
+		JSONObject qmDetails = qmd.getqmsDetails(qmName);
+		int portNumber = ((Long)qmDetails.get("port")).intValue();
+		MQRead readQ = new MQRead(qmDetails.get("Server").toString(),portNumber, qmDetails.get("channel").toString(), qmDetails.get("Name").toString());
 		return readQ.removeInhibition1(qname);
 		
 	}
 	
 	@CrossOrigin(allowedHeaders = "Access-Control-Allow-Origin")
-	@RequestMapping(value = "/updatequeuestatusPut/{name}", method = RequestMethod.GET)
-	public String removePutInhibition(@PathVariable("name") String qname) throws Exception
+	@RequestMapping(value = "/{qmName}/updatequeuestatusPut/{name}", method = RequestMethod.GET)
+	public String removePutInhibition(@PathVariable("qmName") String qmName,@PathVariable("name") String qname) throws Exception
 	{
 		System.out.println("\nFrom Resource "+qname+"\n");
-		MQRead readQ = new MQRead();
+		System.out.println("\nFrom Resource "+qname+"\n");
+		QueueManagerDAO qmd=new QueueManagerDAO();
+		JSONObject qmDetails = qmd.getqmsDetails(qmName);
+		int portNumber = ((Long)qmDetails.get("port")).intValue();
+		MQRead readQ = new MQRead(qmDetails.get("Server").toString(),portNumber, qmDetails.get("channel").toString(), qmDetails.get("Name").toString());
 		return readQ.removeInhibition2(qname);
 		
 	}
 
 	@CrossOrigin(allowedHeaders = "Access-Control-Allow-Origin")
-	@RequestMapping(value = "/updatechannelStatus/{name}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/{qmName}/updatechannelStatus/{name}", method = RequestMethod.GET)
 	@ResponseBody
-	public String mqChannelUpdateStatus(@PathVariable("name") String channelname) throws Exception{
+	public String mqChannelUpdateStatus(@PathVariable("qmName") String qmName,@PathVariable("name") String channelname) throws Exception
+	{
 		QueueManager qm=new QueueManager("unxs0614.ghanp.kfplc.com", 1430, "MQPREPRDSUP.SVRCONN", "FMQINST1");
 		//channelname = "DYNATRACE.SVRCONN";
 		return qm.channelRestart(channelname);
